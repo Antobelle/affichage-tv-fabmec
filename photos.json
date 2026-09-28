@@ -1,5 +1,18 @@
 {
   "refreshSeconds": 120,
   "slideSeconds": 8,
-  "photos": []
+  "photos": [
+    {
+      "url": "DJI_0105.JPG",
+      "title": "Photo chantier"
+    },
+    {
+      "url": "DJI_0106.JPG",
+      "title": "Photo chantier"
+    },
+    {
+      "url": "DJI_0107.JPG",
+      "title": "Photo chantier"
+    }
+  ]
 }
