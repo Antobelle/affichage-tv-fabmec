@@ -187,6 +187,7 @@ function swapTo(item,done){
   lastIndex=order[pos];
   switching=false;
   status.innerHTML=items.length+' photo(s) • affichage stable';
+  restartTimer();
   if(done)done(true);
  };
 
@@ -233,9 +234,10 @@ function goPrev(){
 }
 
 function restartTimer(){
- if(timer)clearInterval(timer);
+ if(timer)clearTimeout(timer);
+ timer=null;
  if(playing && items.length>1){
-  timer=setInterval(function(){
+  timer=setTimeout(function(){
    if(!switching)goNext();
   },8000);
  }
@@ -270,7 +272,6 @@ function loadPhotos(force){
       active.src='';
       standby.src='';
       showFirst();
-      restartTimer();
      }else{
       placeholder.style.display='flex';
       placeholder.innerHTML='Aucune photo trouvée';
@@ -296,13 +297,22 @@ menuBtn.onclick=function(){panel.className=panel.className==='panel open'?'panel
 closeBtn.onclick=function(){panel.className='panel';};
 refreshBtn.onclick=function(){loadPhotos(true);};
 
-nextBtn.onclick=function(){goNext();restartTimer();};
-prevBtn.onclick=function(){goPrev();restartTimer();};
+nextBtn.onclick=function(){
+ if(timer)clearTimeout(timer);
+ timer=null;
+ goNext();
+};
+prevBtn.onclick=function(){
+ if(timer)clearTimeout(timer);
+ timer=null;
+ goPrev();
+};
 
 pauseBtn.onclick=function(){
  playing=!playing;
  pauseBtn.innerHTML=playing?'Pause':'Lecture';
- restartTimer();
+ if(playing)restartTimer();
+ else if(timer){clearTimeout(timer);timer=null;}
 };
 
 fullBtn.onclick=function(){
