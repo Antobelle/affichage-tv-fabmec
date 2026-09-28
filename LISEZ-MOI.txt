@@ -1,0 +1,46 @@
+AFFICHAGE TV FABMEC - VERSION WEB
+
+CONTENU
+- index.html : page à ouvrir sur la TV
+- photos.json : liste des photos affichées
+- photos/ : dossier où mettre les images
+
+AJOUTER UNE PHOTO
+1. Copier la photo dans le dossier photos.
+2. Ouvrir photos.json.
+3. Ajouter une entrée dans "photos", par exemple :
+
+{
+  "url": "photos/levage-plateforme-01.jpg",
+  "title": "Levage plateforme"
+}
+
+Exemple avec plusieurs photos :
+
+"photos": [
+  {
+    "url": "photos/photo1.jpg",
+    "title": "Levage plateforme"
+  },
+  {
+    "url": "photos/photo2.jpg",
+    "title": "Levage Bridge"
+  }
+]
+
+Le site vérifie photos.json automatiquement toutes les 120 secondes.
+Les photos sont diffusées dans un ordre aléatoire.
+Toutes les photos passent une fois avant que l'ordre soit remélangé.
+
+PUBLICATION RECOMMANDEE
+Pour un test gratuit :
+- déposer ce dossier dans un dépôt GitHub public;
+- connecter ce dépôt à Cloudflare Pages;
+- Build command : laisser vide;
+- Build output directory : /
+
+Ensuite la TV ouvre l'adresse HTTPS fournie par Cloudflare Pages.
+
+IMPORTANT
+Tout fichier placé sur ce site public peut être accessible sur Internet.
+N'y déposer que des photos autorisées pour diffusion publique.
