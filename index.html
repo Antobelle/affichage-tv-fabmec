@@ -85,7 +85,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#081624;col
   <div class="info"><div class="small">Photos détectées</div><div id="count" class="big">0</div></div>
   <div class="info"><div class="small">Photo actuelle</div><div id="current">--</div></div>
   <div class="info"><div class="small">Mode</div><b>Aléatoire stable</b><div class="small">La prochaine photo s'affiche seulement quand elle est prête.</div></div>
-  <div class="info"><div class="small">Intervalle</div><b>8 secondes</b></div>
+  <div class="info"><div class="small">Intervalle</div><b>12 secondes</b></div>
   <div class="info"><div class="small">Dernière vérification</div><div id="lastRefresh">--</div></div>
   <button class="btn primary" id="refreshBtn" style="width:100%;margin-top:12px">↻ Actualiser</button>
   <button class="btn" id="closeBtn" style="width:100%;margin-top:8px">Fermer</button>
@@ -239,7 +239,7 @@ function restartTimer(){
  if(playing && items.length>1){
   timer=setTimeout(function(){
    if(!switching)goNext();
-  },8000);
+  },12000);
  }
 }
 
