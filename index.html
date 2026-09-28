@@ -203,10 +203,8 @@ function showCurrent(){
   photo.onerror=function(){
     if(token!==loadToken)return;
     loading.style.display='flex';
-    loading.innerHTML='Photo non chargée — suivante...';
-    setTimeout(function(){
-      if(token===loadToken)nextPhoto();
-    },1600);
+    loading.innerHTML='Photo non chargée';
+    status.innerHTML=items.length+' photo(s) • synchronisation automatique';
   };
 
   photo.src='';
@@ -232,7 +230,7 @@ function prevPhoto(){
 function restartSlideshow(){
   if(slideTimer)clearInterval(slideTimer);
   if(playing && items.length>1){
-    slideTimer=setInterval(nextPhoto,10000);
+    slideTimer=setInterval(nextPhoto,8000);
   }
 }
 
