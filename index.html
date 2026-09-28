@@ -6,40 +6,65 @@
 <title>Affichage TV FABMEC</title>
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;font-family:Arial,Helvetica,sans-serif;background:#081624;color:#fff}
-body{overflow:hidden}
-.app{height:100vh;display:grid;grid-template-rows:58px 1fr 40px}
-.top,.bottom{display:flex;align-items:center;justify-content:space-between;background:#0b1f33;padding:0 14px}
-.title{font-size:20px;font-weight:900}
-.small{font-size:11px;color:#b8c8d5}
-.right{display:flex;gap:8px;align-items:center}
-.btn{border:0;border-radius:8px;padding:7px 10px;background:#dfeaf1;color:#0b1f33;font-weight:800;cursor:pointer}
-.primary{background:#2ea7e0;border:2px solid #fff}
-.main{position:relative;min-height:0;padding:8px}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#081624;color:#fff;font-family:Arial,Helvetica,sans-serif}
+body{background:#081624}
+.app{height:100vh;display:grid;grid-template-rows:64px 1fr 44px}
+.top,.bottom{
+  display:flex;align-items:center;justify-content:space-between;
+  background:#0b1f33;padding:0 16px;transition:opacity .35s ease;
+  border-color:rgba(255,255,255,.08)
+}
+.top{border-bottom:1px solid rgba(255,255,255,.08)}
+.bottom{border-top:1px solid rgba(255,255,255,.08)}
+.title{font-size:21px;font-weight:900}
+.sub,.small{font-size:12px;color:#b8c8d5}
+.top-right{display:flex;align-items:center;gap:12px}
+.btn{
+  border:0;border-radius:9px;padding:8px 11px;background:#dfeaf1;
+  color:#0b1f33;font-weight:800;cursor:pointer
+}
+.btn.primary{background:#2ea7e0;border:2px solid #fff;color:#06243a}
+.main{position:relative;min-height:0;padding:10px}
 .hero{
-  position:absolute;inset:8px;border-radius:14px;overflow:hidden;
+  position:absolute;inset:10px;border-radius:16px;overflow:hidden;
   background:
     linear-gradient(rgba(5,17,29,.22),rgba(5,17,29,.22)),
     url("steel_blueprint_bg.png") center/cover no-repeat,
     #0b1f33;
 }
-.slide{position:absolute;left:0;top:0;width:100%;height:100%;display:none;text-align:center}
-.slide.active{display:block}
-.slide img{
-  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  max-width:100%;max-height:100%;width:auto;height:auto;border:0;
+.photo-wrap{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
 }
-.placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;background:rgba(11,31,51,.35)}
-.placeholder h1{font-size:44px;margin:0 0 8px}
-.caption{position:absolute;left:14px;bottom:12px;z-index:3;background:rgba(0,0,0,.55);padding:6px 10px;border-radius:7px;font-size:11px;max-width:70%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.panel{position:absolute;z-index:50;top:14px;right:14px;width:250px;background:rgba(16,44,69,.98);border-radius:12px;padding:12px;display:none;box-shadow:0 12px 34px rgba(0,0,0,.45)}
+#photo{
+  display:block;max-width:100%;max-height:100%;width:auto;height:auto;
+}
+.loading{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  text-align:center;background:rgba(11,31,51,.22);font-weight:800;font-size:20px
+}
+.caption{
+  position:absolute;left:16px;bottom:14px;background:rgba(0,0,0,.58);
+  padding:7px 11px;border-radius:8px;font-size:12px;max-width:70%;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:none
+}
+.panel{
+  position:absolute;z-index:50;top:18px;right:18px;width:270px;
+  background:rgba(16,44,69,.98);border:1px solid rgba(255,255,255,.18);
+  border-radius:14px;padding:14px;box-shadow:0 14px 40px rgba(0,0,0,.45);
+  display:none
+}
 .panel.open{display:block}
-.info{margin-top:9px;background:rgba(255,255,255,.07);border-radius:9px;padding:8px}
-.big{font-size:20px;font-weight:900}
-.ui-hidden .top,.ui-hidden .bottom{display:none}
-.ui-hidden .app{grid-template-rows:1fr}
-.ui-hidden .main{padding:0}
-.ui-hidden .hero{inset:0;border-radius:0}
+.panel h3{margin:0 0 12px}
+.info{margin-top:10px;padding:9px;background:rgba(255,255,255,.07);border-radius:10px}
+.big{font-size:22px;font-weight:900}
+.auto-hide .top,.auto-hide .bottom{opacity:0;pointer-events:none}
+.auto-hide .app{grid-template-rows:1fr}
+.auto-hide .main{padding:0}
+.auto-hide .hero{inset:0;border-radius:0}
+@media(max-width:700px){
+  .title{font-size:17px}
+  .clock{display:none}
+}
 </style>
 </head>
 <body>
@@ -47,46 +72,50 @@ body{overflow:hidden}
 <header class="top">
   <div>
     <div class="title">AFFICHAGE TV FABMEC</div>
-    <div class="small">Photos chantier • mode TV LG</div>
+    <div class="sub">Photos chantier • diffusion aléatoire • fond plan structure acier</div>
   </div>
-  <div class="right">
-    <span id="clock" class="small"></span>
+  <div class="top-right">
+    <div class="clock" id="clock">--</div>
     <button class="btn primary" id="fullBtn">⛶ PLEIN ÉCRAN</button>
     <button class="btn" id="menuBtn">☰ MENU</button>
   </div>
 </header>
 
 <main class="main">
-  <section class="hero" id="hero">
-    <div class="placeholder"><div><h1>FABMEC</h1><p>Chargement des photos...</p></div></div>
+  <section class="hero">
+    <div class="photo-wrap">
+      <img id="photo" alt="">
+    </div>
+    <div class="loading" id="loading">Chargement des photos...</div>
+    <div class="caption" id="caption"></div>
   </section>
 
   <aside class="panel" id="panel">
-    <b>Réglages</b>
+    <h3>Réglages</h3>
     <div class="info">
       <div class="small">Photos détectées</div>
       <div class="big" id="count">0</div>
     </div>
     <div class="info">
-      <div class="small">Photos chargées correctement</div>
-      <div class="big" id="loadedCount">0</div>
+      <div class="small">Photo actuelle</div>
+      <div id="current">--</div>
     </div>
     <div class="info">
       <div class="small">Mode</div>
-      <b>Aléatoire</b>
+      <b>Aléatoire intelligent</b>
+      <div class="small">Une seule photo chargée à la fois.</div>
     </div>
     <div class="info">
       <div class="small">Dernière vérification</div>
-      <span id="lastRefresh">--</span>
+      <div id="lastRefresh">--</div>
     </div>
-    <button class="btn primary" id="refreshBtn" style="width:100%;margin-top:10px">↻ Actualiser</button>
-    <button class="btn" id="hideUiBtn" style="width:100%;margin-top:7px">Masquer les contrôles</button>
-    <button class="btn" id="closeBtn" style="width:100%;margin-top:7px">Fermer</button>
+    <button class="btn primary" id="refreshBtn" style="width:100%;margin-top:12px">↻ Actualiser</button>
+    <button class="btn" id="closeBtn" style="width:100%;margin-top:8px">Fermer le menu</button>
   </aside>
 </main>
 
 <footer class="bottom">
-  <span class="small" id="status">Connexion...</span>
+  <div class="small" id="status">Connexion...</div>
   <div>
     <button class="btn" id="prevBtn">◀</button>
     <button class="btn" id="pauseBtn">Pause</button>
@@ -98,9 +127,12 @@ body{overflow:hidden}
 <script>
 (function(){
 var API='https://api.github.com/repos/Antobelle/affichage-tv-fabmec/contents/photos?ref=main';
-var hero=document.getElementById('hero');
+
+var photo=document.getElementById('photo');
+var loading=document.getElementById('loading');
+var caption=document.getElementById('caption');
 var count=document.getElementById('count');
-var loadedCount=document.getElementById('loadedCount');
+var current=document.getElementById('current');
 var status=document.getElementById('status');
 var lastRefresh=document.getElementById('lastRefresh');
 var panel=document.getElementById('panel');
@@ -111,7 +143,6 @@ var fullBtn=document.getElementById('fullBtn');
 var pauseBtn=document.getElementById('pauseBtn');
 var nextBtn=document.getElementById('nextBtn');
 var prevBtn=document.getElementById('prevBtn');
-var hideUiBtn=document.getElementById('hideUiBtn');
 var clock=document.getElementById('clock');
 
 var items=[];
@@ -121,18 +152,23 @@ var lastIndex=-1;
 var slideTimer=null;
 var playing=true;
 var signature='';
-var loaded=0;
+var uiTimer=null;
+var loadToken=0;
 
 function updateClock(){
   var d=new Date();
   clock.innerHTML=d.toLocaleDateString()+' '+d.toLocaleTimeString();
 }
-setInterval(updateClock,1000);
 updateClock();
+setInterval(updateClock,1000);
+
+function photoUrl(name){
+  return 'photos/'+encodeURIComponent(name);
+}
 
 function shuffleCycle(){
   var arr=[],i,j,t;
-  for(i=0;i<items.length;i++){arr.push(i);}
+  for(i=0;i<items.length;i++)arr.push(i);
   for(i=arr.length-1;i>0;i--){
     j=Math.floor(Math.random()*(i+1));
     t=arr[i];arr[i]=arr[j];arr[j]=t;
@@ -145,153 +181,154 @@ function shuffleCycle(){
 }
 
 function showCurrent(){
-  if(!items.length){return;}
-  var slides=document.getElementsByClassName('slide');
-  var i;
-  for(i=0;i<slides.length;i++){slides[i].className='slide';}
+  if(!items.length)return;
   var idx=order[pos];
-  var s=document.getElementById('slide-'+idx);
-  if(s){s.className='slide active';}
+  var item=items[idx];
+  var token=++loadToken;
   lastIndex=idx;
+
+  loading.style.display='flex';
+  loading.innerHTML='Chargement...';
+  caption.style.display='none';
+  current.innerHTML=item.name;
+
+  photo.onload=function(){
+    if(token!==loadToken)return;
+    loading.style.display='none';
+    caption.innerHTML=item.name;
+    caption.style.display='block';
+    status.innerHTML=items.length+' photo(s) • synchronisation automatique';
+  };
+
+  photo.onerror=function(){
+    if(token!==loadToken)return;
+    loading.style.display='flex';
+    loading.innerHTML='Photo non chargée — suivante...';
+    setTimeout(function(){
+      if(token===loadToken)nextPhoto();
+    },1600);
+  };
+
+  photo.src='';
+  setTimeout(function(){
+    if(token===loadToken)photo.src=photoUrl(item.name);
+  },30);
 }
 
-function render(){
-  hero.innerHTML='';
-  loaded=0;
-  loadedCount.innerHTML='0';
-
-  if(!items.length){
-    hero.innerHTML='<div class="placeholder"><div><h1>FABMEC</h1><p>Aucune image trouvée.</p></div></div>';
-    return;
-  }
-
-  var i;
-  for(i=0;i<items.length;i++){
-    var s=document.createElement('div');
-    s.className='slide';
-    s.id='slide-'+i;
-
-    var img=document.createElement('img');
-    img.src=items[i].url;
-    img.alt=items[i].name;
-    img.onload=function(){
-      loaded++;
-      loadedCount.innerHTML=String(loaded);
-    };
-    img.onerror=function(){
-      status.innerHTML='Une ou plusieurs images ne chargent pas sur ce navigateur.';
-    };
-
-    var c=document.createElement('div');
-    c.className='caption';
-    c.innerHTML=items[i].name;
-
-    s.appendChild(img);
-    s.appendChild(c);
-    hero.appendChild(s);
-  }
-
-  lastIndex=-1;
-  shuffleCycle();
-  showCurrent();
-  restartSlideshow();
-}
-
-function next(){
-  if(!items.length){return;}
+function nextPhoto(){
+  if(!items.length)return;
   pos++;
-  if(pos>=order.length){shuffleCycle();}
+  if(pos>=order.length)shuffleCycle();
   showCurrent();
 }
 
-function prev(){
-  if(!items.length){return;}
+function prevPhoto(){
+  if(!items.length)return;
   pos--;
-  if(pos<0){pos=order.length-1;}
+  if(pos<0)pos=order.length-1;
   showCurrent();
 }
 
 function restartSlideshow(){
-  if(slideTimer){clearInterval(slideTimer);}
+  if(slideTimer)clearInterval(slideTimer);
   if(playing && items.length>1){
-    slideTimer=setInterval(next,8000);
+    slideTimer=setInterval(nextPhoto,10000);
   }
 }
 
-function photoUrl(name){
-  return 'photos/'+encodeURIComponent(name).replace(/%2F/g,'/');
-}
-
 function loadPhotos(force){
+  status.innerHTML='Synchronisation...';
   var xhr=new XMLHttpRequest();
   xhr.open('GET',API+'&ts='+(new Date().getTime()),true);
+
   xhr.onreadystatechange=function(){
-    if(xhr.readyState===4){
-      if(xhr.status>=200 && xhr.status<300){
-        try{
-          var data=JSON.parse(xhr.responseText);
-          var images=[];
-          var shas=[];
-          var i,f;
-          for(i=0;i<data.length;i++){
-            f=data[i];
-            if(f.type==='file' && /\.(jpg|jpeg|png|webp)$/i.test(f.name)){
-              images.push({name:f.name,url:photoUrl(f.name)});
-              shas.push(f.sha);
-            }
+    if(xhr.readyState!==4)return;
+
+    if(xhr.status>=200 && xhr.status<300){
+      try{
+        var data=JSON.parse(xhr.responseText);
+        var images=[],shas=[],i,f;
+
+        for(i=0;i<data.length;i++){
+          f=data[i];
+          if(f.type==='file' && /\.(jpg|jpeg|png|webp)$/i.test(f.name)){
+            images.push({name:f.name});
+            shas.push(f.sha);
           }
-          var newSig=shas.join('|');
-          if(force || newSig!==signature){
-            signature=newSig;
-            items=images;
-            count.innerHTML=String(items.length);
-            status.innerHTML=items.length+' photo(s) • synchronisation automatique';
-            render();
-          }
-          lastRefresh.innerHTML=new Date().toLocaleTimeString();
-        }catch(e){
-          status.innerHTML='Erreur de lecture de la liste des photos';
         }
-      }else{
-        status.innerHTML='Impossible de lire le dossier photos';
+
+        var newSignature=shas.join('|');
+
+        if(force || newSignature!==signature || !items.length){
+          signature=newSignature;
+          items=images;
+          count.innerHTML=String(items.length);
+
+          if(items.length){
+            lastIndex=-1;
+            shuffleCycle();
+            showCurrent();
+            restartSlideshow();
+          }else{
+            loading.style.display='flex';
+            loading.innerHTML='Aucune photo trouvée.';
+          }
+        }else{
+          status.innerHTML=items.length+' photo(s) • synchronisation automatique';
+        }
+
+        lastRefresh.innerHTML=new Date().toLocaleTimeString();
+      }catch(e){
+        status.innerHTML='Erreur de lecture des photos';
       }
+    }else{
+      status.innerHTML='Impossible de lire le dossier photos';
     }
   };
+
   xhr.send();
 }
 
-setInterval(function(){loadPhotos(false);},120000);
 loadPhotos(true);
+setInterval(function(){loadPhotos(false);},300000);
 
-menuBtn.onclick=function(){panel.className=panel.className==='panel open'?'panel':'panel open';};
+menuBtn.onclick=function(){
+  panel.className=panel.className==='panel open'?'panel':'panel open';
+};
 closeBtn.onclick=function(){panel.className='panel';};
 refreshBtn.onclick=function(){loadPhotos(true);};
 
-nextBtn.onclick=function(){next();restartSlideshow();};
-prevBtn.onclick=function(){prev();restartSlideshow();};
+nextBtn.onclick=function(){nextPhoto();restartSlideshow();};
+prevBtn.onclick=function(){prevPhoto();restartSlideshow();};
+
 pauseBtn.onclick=function(){
   playing=!playing;
   pauseBtn.innerHTML=playing?'Pause':'Lecture';
   restartSlideshow();
 };
 
-hideUiBtn.onclick=function(){
-  if(document.body.className==='ui-hidden'){
-    document.body.className='';
-    hideUiBtn.innerHTML='Masquer les contrôles';
-  }else{
-    document.body.className='ui-hidden';
-  }
-};
-
 fullBtn.onclick=function(){
   var el=document.documentElement;
   try{
-    if(el.requestFullscreen){el.requestFullscreen();}
-    else if(el.webkitRequestFullscreen){el.webkitRequestFullscreen();}
-    else if(el.msRequestFullscreen){el.msRequestFullscreen();}
+    if(el.requestFullscreen)el.requestFullscreen();
+    else if(el.webkitRequestFullscreen)el.webkitRequestFullscreen();
+    else if(el.msRequestFullscreen)el.msRequestFullscreen();
   }catch(e){}
 };
+
+function showUi(){
+  clearTimeout(uiTimer);
+  document.body.className='';
+  uiTimer=setTimeout(function(){
+    if(document.fullscreenElement || document.webkitFullscreenElement){
+      document.body.className='auto-hide';
+    }
+  },4000);
+}
+
+document.onmousemove=showUi;
+document.onclick=showUi;
+document.ontouchstart=showUi;
 })();
 </script>
 </body>
