@@ -1,31 +1,264 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Affichage TV FABMEC</title>
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Affichage TV FABMEC</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#081624;color:#fff;font-family:Arial}
-.app{height:100vh;display:grid;grid-template-rows:64px 1fr 44px}.top,.bottom{display:flex;align-items:center;justify-content:space-between;background:#0b1f33;padding:0 16px}.title{font-size:21px;font-weight:900}.sub,.small{font-size:12px;color:#b8c8d5}.right{display:flex;gap:10px;align-items:center}.btn{border:0;border-radius:9px;padding:8px 11px;background:#dfeaf1;color:#0b1f33;font-weight:800}.primary{background:#2ea7e0;border:2px solid #fff}.main{position:relative;min-height:0;padding:10px}.hero{position:absolute;inset:10px;border-radius:16px;overflow:hidden;background:#0b1f33 url('steel_blueprint_bg.png') center/cover no-repeat}.hero img{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-width:100%;max-height:100%;width:auto;height:auto;display:block}.msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(11,31,51,.18);font-size:20px;font-weight:800}.cap{position:absolute;left:16px;bottom:14px;background:rgba(0,0,0,.58);padding:7px 11px;border-radius:8px;font-size:12px;display:none}.panel{position:absolute;z-index:50;top:18px;right:18px;width:260px;background:rgba(16,44,69,.98);border-radius:14px;padding:14px;display:none}.panel.open{display:block}.info{margin-top:10px;padding:9px;background:rgba(255,255,255,.07);border-radius:10px}.big{font-size:22px;font-weight:900}
-</style></head><body>
-<div class="app"><header class="top"><div><div class="title">AFFICHAGE TV FABMEC</div><div class="sub">Mode LG simple • 12 secondes</div></div><div class="right"><span id="clock" class="small"></span><button class="btn primary" id="fullBtn">⛶ PLEIN ÉCRAN</button><button class="btn" id="menuBtn">☰ MENU</button></div></header>
-<main class="main"><section class="hero"><img id="photo" alt=""><div id="message" class="msg">Chargement...</div><div id="caption" class="cap"></div></section>
-<aside id="panel" class="panel"><b>Réglages</b><div class="info"><div class="small">Photos détectées</div><div id="count" class="big">0</div></div><div class="info"><div class="small">Photo actuelle</div><div id="current">--</div></div><div class="info"><div class="small">Intervalle</div><b>12 secondes</b></div><button class="btn primary" id="refreshBtn" style="width:100%;margin-top:10px">↻ Actualiser</button><button class="btn" id="closeBtn" style="width:100%;margin-top:7px">Fermer</button></aside></main>
-<footer class="bottom"><span id="status" class="small">Connexion...</span><div><button class="btn" id="prevBtn">◀</button> <button class="btn" id="pauseBtn">Pause</button> <button class="btn" id="nextBtn">▶</button></div></footer></div>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#081624;color:#fff;font-family:Arial,Helvetica,sans-serif}
+.app{height:100vh;display:grid;grid-template-rows:64px 1fr 44px}
+.top,.bottom{display:flex;align-items:center;justify-content:space-between;background:#0b1f33;padding:0 16px}
+.title{font-size:21px;font-weight:900}
+.sub,.small{font-size:12px;color:#b8c8d5}
+.right{display:flex;gap:10px;align-items:center}
+.btn{border:0;border-radius:9px;padding:8px 11px;background:#dfeaf1;color:#0b1f33;font-weight:800;cursor:pointer}
+.primary{background:#2ea7e0;border:2px solid #fff}
+.main{position:relative;min-height:0;padding:10px}
+.hero{
+  position:absolute;inset:10px;border-radius:16px;overflow:hidden;
+  background:
+    linear-gradient(rgba(5,17,29,.22),rgba(5,17,29,.22)),
+    url("steel_blueprint_bg.png") center/cover no-repeat,
+    #0b1f33;
+}
+#photo{
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  max-width:100%;max-height:100%;
+  width:auto;height:auto;display:block
+}
+#message{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  text-align:center;font-size:20px;font-weight:800;background:rgba(11,31,51,.18)
+}
+#caption{
+  position:absolute;left:16px;bottom:14px;background:rgba(0,0,0,.58);
+  padding:7px 11px;border-radius:8px;font-size:12px;display:none
+}
+.panel{
+  position:absolute;z-index:50;top:18px;right:18px;width:260px;
+  background:rgba(16,44,69,.98);border-radius:14px;padding:14px;display:none
+}
+.panel.open{display:block}
+.info{margin-top:10px;padding:9px;background:rgba(255,255,255,.07);border-radius:10px}
+.big{font-size:22px;font-weight:900}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <div>
+    <div class="title">AFFICHAGE TV FABMEC</div>
+    <div class="sub">Photos chantier • diffusion aléatoire • 12 secondes</div>
+  </div>
+  <div class="right">
+    <span id="clock" class="small"></span>
+    <button class="btn primary" id="fullBtn">⛶ PLEIN ÉCRAN</button>
+    <button class="btn" id="menuBtn">☰ MENU</button>
+  </div>
+</header>
+
+<main class="main">
+  <section class="hero">
+    <img id="photo" alt="">
+    <div id="message">Chargement des photos...</div>
+    <div id="caption"></div>
+  </section>
+
+  <aside id="panel" class="panel">
+    <b>Réglages</b>
+    <div class="info">
+      <div class="small">Photos détectées</div>
+      <div id="count" class="big">0</div>
+    </div>
+    <div class="info">
+      <div class="small">Photo actuelle</div>
+      <div id="current">--</div>
+    </div>
+    <div class="info">
+      <div class="small">Intervalle</div>
+      <b>12 secondes</b>
+    </div>
+    <button class="btn primary" id="refreshBtn" style="width:100%;margin-top:10px">↻ Actualiser</button>
+    <button class="btn" id="closeBtn" style="width:100%;margin-top:7px">Fermer</button>
+  </aside>
+</main>
+
+<footer class="bottom">
+  <span id="status" class="small">Connexion...</span>
+  <div>
+    <button class="btn" id="prevBtn">◀</button>
+    <button class="btn" id="pauseBtn">Pause</button>
+    <button class="btn" id="nextBtn">▶</button>
+  </div>
+</footer>
+</div>
+
 <script>
 (function(){
-var API='https://api.github.com/repos/Antobelle/affichage-tv-fabmec/contents/photos-tv?ref=main';
-var photo=document.getElementById('photo'),message=document.getElementById('message'),caption=document.getElementById('caption'),count=document.getElementById('count'),current=document.getElementById('current'),status=document.getElementById('status'),panel=document.getElementById('panel'),clockEl=document.getElementById('clock');
-var files=[],order=[],pos=0,last=-1,timer=null,playing=true;
-function clock(){var d=new Date();clockEl.innerHTML=d.toLocaleDateString()+' '+d.toLocaleTimeString()}clock();setInterval(clock,1000);
-function urlFor(name){return 'photos-tv/'+encodeURIComponent(name)}
-function shuffle(){var a=[],i,j,t;for(i=0;i<files.length;i++)a.push(i);for(i=a.length-1;i>0;i--){j=Math.floor(Math.random()*(i+1));t=a[i];a[i]=a[j];a[j]=t}if(a.length>1&&a[0]===last){t=a[0];a[0]=a[1];a[1]=t}order=a;pos=0}
-function show(){if(!files.length)return;var idx=order[pos],f=files[idx];current.innerHTML=f.name;message.style.display='flex';message.innerHTML='Chargement...';caption.style.display='none';photo.onload=function(){message.style.display='none';caption.innerHTML=f.name;caption.style.display='block';status.innerHTML=files.length+' photo(s) • mode LG simple'};photo.onerror=function(){message.style.display='flex';message.innerHTML='Photo non chargée'};photo.src=urlFor(f.name)+'?v='+(new Date().getTime());last=idx}
-function next(){if(!files.length)return;pos++;if(pos>=order.length)shuffle();show()}function prev(){if(!files.length)return;pos--;if(pos<0)pos=order.length-1;show()}
-function restart(){if(timer)clearInterval(timer);if(playing&&files.length>1)timer=setInterval(next,12000)}
-function load(){status.innerHTML='Synchronisation...';var x=new XMLHttpRequest();x.open('GET',API+'&ts='+(new Date().getTime()),true);x.onreadystatechange=function(){if(x.readyState!==4)return;if(x.status>=200&&x.status<300){try{var data=JSON.parse(x.responseText),a=[],i,f;for(i=0;i<data.length;i++){f=data[i];if(f.type==='file'&&/\.(jpg|jpeg|png|webp)$/i.test(f.name))a.push({name:f.name})}files=a;count.innerHTML=String(files.length);if(files.length){shuffle();show();restart()}else message.innerHTML='Aucune photo trouvée dans photos-tv'}catch(e){status.innerHTML='Erreur de lecture'}}else status.innerHTML='Impossible de lire photos-tv'};x.send()}
+var API='https://api.github.com/repos/Antobelle/affichage-tv-fabmec/contents/photos?ref=main';
+
+var photo=document.getElementById('photo');
+var message=document.getElementById('message');
+var caption=document.getElementById('caption');
+var count=document.getElementById('count');
+var current=document.getElementById('current');
+var status=document.getElementById('status');
+var panel=document.getElementById('panel');
+var clockEl=document.getElementById('clock');
+
+var files=[];
+var order=[];
+var pos=0;
+var last=-1;
+var timer=null;
+var playing=true;
+
+function clock(){
+  var d=new Date();
+  clockEl.innerHTML=d.toLocaleDateString()+' '+d.toLocaleTimeString();
+}
+clock();
+setInterval(clock,1000);
+
+function photoUrl(name){
+  return 'photos/'+encodeURIComponent(name);
+}
+
+function shuffle(){
+  var a=[],i,j,t;
+  for(i=0;i<files.length;i++)a.push(i);
+  for(i=a.length-1;i>0;i--){
+    j=Math.floor(Math.random()*(i+1));
+    t=a[i];a[i]=a[j];a[j]=t;
+  }
+  if(a.length>1 && a[0]===last){
+    t=a[0];a[0]=a[1];a[1]=t;
+  }
+  order=a;
+  pos=0;
+}
+
+function show(){
+  if(!files.length)return;
+
+  var idx=order[pos];
+  var f=files[idx];
+
+  current.innerHTML=f.name;
+  message.style.display='flex';
+  message.innerHTML='Chargement...';
+  caption.style.display='none';
+
+  photo.onload=function(){
+    message.style.display='none';
+    caption.innerHTML=f.name;
+    caption.style.display='block';
+    status.innerHTML=files.length+' photo(s) • synchronisation automatique';
+  };
+
+  photo.onerror=function(){
+    message.style.display='flex';
+    message.innerHTML='Photo non chargée';
+  };
+
+  photo.src=photoUrl(f.name)+'?v='+(new Date().getTime());
+  last=idx;
+}
+
+function next(){
+  if(!files.length)return;
+  pos++;
+  if(pos>=order.length)shuffle();
+  show();
+}
+
+function prev(){
+  if(!files.length)return;
+  pos--;
+  if(pos<0)pos=order.length-1;
+  show();
+}
+
+function restart(){
+  if(timer)clearInterval(timer);
+  if(playing && files.length>1){
+    timer=setInterval(next,12000);
+  }
+}
+
+function load(){
+  status.innerHTML='Synchronisation...';
+
+  var x=new XMLHttpRequest();
+  x.open('GET',API+'&ts='+(new Date().getTime()),true);
+
+  x.onreadystatechange=function(){
+    if(x.readyState!==4)return;
+
+    if(x.status>=200 && x.status<300){
+      try{
+        var data=JSON.parse(x.responseText);
+        var a=[],i,f;
+
+        for(i=0;i<data.length;i++){
+          f=data[i];
+          if(f.type==='file' && /\.(jpg|jpeg|png|webp)$/i.test(f.name)){
+            a.push({name:f.name});
+          }
+        }
+
+        files=a;
+        count.innerHTML=String(files.length);
+
+        if(files.length){
+          shuffle();
+          show();
+          restart();
+        }else{
+          message.innerHTML='Aucune photo trouvée dans le dossier photos';
+        }
+      }catch(e){
+        status.innerHTML='Erreur de lecture';
+      }
+    }else{
+      status.innerHTML='Impossible de lire le dossier photos';
+    }
+  };
+
+  x.send();
+}
+
 load();
-document.getElementById('menuBtn').onclick=function(){panel.className=panel.className==='panel open'?'panel':'panel open'};
-document.getElementById('closeBtn').onclick=function(){panel.className='panel'};
+
+document.getElementById('menuBtn').onclick=function(){
+  panel.className=panel.className==='panel open'?'panel':'panel open';
+};
+document.getElementById('closeBtn').onclick=function(){
+  panel.className='panel';
+};
 document.getElementById('refreshBtn').onclick=load;
-document.getElementById('nextBtn').onclick=function(){next();restart()};
-document.getElementById('prevBtn').onclick=function(){prev();restart()};
-document.getElementById('pauseBtn').onclick=function(){playing=!playing;this.innerHTML=playing?'Pause':'Lecture';restart()};
-document.getElementById('fullBtn').onclick=function(){var e=document.documentElement;try{if(e.requestFullscreen)e.requestFullscreen();else if(e.webkitRequestFullscreen)e.webkitRequestFullscreen();else if(e.msRequestFullscreen)e.msRequestFullscreen()}catch(err){}};
+document.getElementById('nextBtn').onclick=function(){
+  next();restart();
+};
+document.getElementById('prevBtn').onclick=function(){
+  prev();restart();
+};
+document.getElementById('pauseBtn').onclick=function(){
+  playing=!playing;
+  this.innerHTML=playing?'Pause':'Lecture';
+  restart();
+};
+document.getElementById('fullBtn').onclick=function(){
+  var e=document.documentElement;
+  try{
+    if(e.requestFullscreen)e.requestFullscreen();
+    else if(e.webkitRequestFullscreen)e.webkitRequestFullscreen();
+    else if(e.msRequestFullscreen)e.msRequestFullscreen();
+  }catch(err){}
+};
 })();
-</script></body></html>
+</script>
+</body>
+</html>
